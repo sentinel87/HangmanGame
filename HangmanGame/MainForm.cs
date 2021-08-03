@@ -20,12 +20,17 @@ namespace HangmanGame
         string keyWord = "hangman";
         string displayedWord = "_______";
 
+        List<string>gameWords { get; set; }
+        List<string>selectedWords { get; set; }
+
+
         string[] letters = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
 
         public MainForm()
         {
             InitializeComponent();
             gameDataSource = new JsonHelper();
+            gameWords = gameDataSource.GetGameData();
             foreach(string letter in letters)
             {
                 Button button = new Button();
@@ -33,6 +38,7 @@ namespace HangmanGame
                 button.Height = 35;
                 button.Width = 35;
                 button.Name = "btn" + letter;
+                button.Enabled = false;
                 button.Click += new EventHandler(btnLetter_Click);
                 flowLayoutPanel1.Controls.Add(button);
             }
@@ -45,6 +51,7 @@ namespace HangmanGame
                 return;
 
             char c = btn.Name.ToLower().Last();
+            btn.Enabled = false;
             validateChoice(c);
         }
 
@@ -55,11 +62,18 @@ namespace HangmanGame
 
         private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            hangmanPictureControl1.ClearPicture();
-            chancesLeft = 6;
-            lblChances.Text = chancesLeft.ToString();
+            if(gameWords.Count<12)
+            {
+                MessageBox.Show("Game source does not have enough words (12).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                selectedWords = getRoundWords();
+            }
+            clearGame();
+            nextRound();
             round = 1;
-            lblRound.Text = round.ToString();
         }
 
         private void validateChoice(char c)
@@ -81,9 +95,10 @@ namespace HangmanGame
                 if (displayedWord==keyWord)
                 {
                     round++;
-                    chancesLeft = 6;
-                    keyWord = "hangman";
-                    displayedWord = "_______";
+                    clearGame();
+                    nextRound();
+                    MessageBox.Show("Good job!", "Round passed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    nextRound();
                 }
             }
             else
@@ -91,7 +106,52 @@ namespace HangmanGame
                 chancesLeft--;
                 lblChances.Text = chancesLeft.ToString();
                 hangmanPictureControl1.DrawHangman(chancesLeft);
+                if(chancesLeft==0)
+                {
+                    MessageBox.Show("Game over!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    clearGame();
+                }
             }
+        }
+
+        private void nextRound()
+        {
+            keyWord = selectedWords[round - 1];
+            displayedWord = "";
+            displayedWord = displayedWord.PadLeft(keyWord.Length, '_');
+            lblWord.Text = separateChars(displayedWord);
+        }
+
+        private void clearGame()
+        {
+            hangmanPictureControl1.ClearPicture();
+            chancesLeft = 6;
+            lblChances.Text = chancesLeft.ToString();
+            lblRound.Text = round.ToString();
+            foreach (Control control in flowLayoutPanel1.Controls)
+                control.Enabled = true;
+        }
+
+        private List<string> getRoundWords()
+        {
+            List<string> words = new List<string>();
+            List<int> indexes = new List<int>();
+            Random rnd = new Random();
+            int counter = 0;
+            while(counter<5)
+            {
+                int idx = rnd.Next(0, gameWords.Count - 1);
+                if (indexes.Any(i => i == idx))
+                    continue;
+                else
+                {
+                    words.Add(gameWords[idx]);
+                    indexes.Add(idx);
+                    counter++;
+                }
+            }
+
+            return words;
         }
 
         private List<int> checkChar(char c)
@@ -117,6 +177,11 @@ namespace HangmanGame
             }
 
             return result;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -113,9 +113,8 @@ namespace HangmanGame
             this.lblWord.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblWord.Location = new System.Drawing.Point(13, 151);
             this.lblWord.Name = "lblWord";
-            this.lblWord.Size = new System.Drawing.Size(136, 37);
+            this.lblWord.Size = new System.Drawing.Size(0, 37);
             this.lblWord.TabIndex = 31;
-            this.lblWord.Text = "_ _ _ _ _ _ _";
             // 
             // label2
             // 
@@ -163,6 +162,7 @@ namespace HangmanGame
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Hangman game";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
