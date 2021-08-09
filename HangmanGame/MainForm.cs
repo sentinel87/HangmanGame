@@ -13,16 +13,8 @@ namespace HangmanGame
 {
     public partial class MainForm : Form
     {
+        Logic logic { get; set; }
         private IGameDataSource gameDataSource { get; set; }
-        int chancesLeft = 6;
-        int round = 1;
-
-        string keyWord = "hangman";
-        string displayedWord = "_______";
-
-        List<string>gameWords { get; set; }
-        List<string>selectedWords { get; set; }
-
 
         string[] letters = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
 
@@ -30,7 +22,8 @@ namespace HangmanGame
         {
             InitializeComponent();
             gameDataSource = new JsonHelper();
-            gameWords = gameDataSource.GetGameData();
+            logic = new Logic();
+            logic.SetDataSource(gameDataSource.GetGameData());
             foreach(string letter in letters)
             {
                 Button button = new Button();
@@ -52,124 +45,58 @@ namespace HangmanGame
 
             char c = btn.Name.ToLower().Last();
             btn.Enabled = false;
-            validateChoice(c);
-        }
+            bool passed = false;
+            bool next = false;
+            lblWord.Text = logic.validateChoice(c, out passed, out next);
 
-        private void btnTest_Click(object sender, EventArgs e)
-        {
-            validateChoice('n');
+            if (passed == false)
+                hangmanPictureControl1.DrawHangman(logic.ChancesLeft);
+            if(next == true)
+            {
+                lblWord.Text = separateChars(logic.DisplayedWord);
+                MessageBox.Show("Good job!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                logic.NextRound();
+                clearGame();
+            }
+            lblWord.Text = separateChars(logic.DisplayedWord);
+            lblChances.Text = logic.ChancesLeft.ToString();
+            lblRound.Text = logic.Round.ToString();
+            if (logic.ChancesLeft == 0)
+            {
+                MessageBox.Show("Game over!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                clearGame();
+            }
+
         }
 
         private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(gameWords.Count<12)
+            bool result = logic.ResetLogic();
+            if(!result)
             {
                 MessageBox.Show("Game source does not have enough words (12).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else
-            {
-                selectedWords = getRoundWords();
-            }
             clearGame();
-            nextRound();
-            round = 1;
-        }
-
-        private void validateChoice(char c)
-        {
-            List<int> charIdxs = checkChar(c);
-
-            if(charIdxs.Count>0)
-            {
-                StringBuilder sb = new StringBuilder(displayedWord);
-                foreach (int idx in charIdxs)
-                {
-                    sb[idx] = c;
-                }
-
-                displayedWord = sb.ToString();
-
-                lblWord.Text = separateChars(displayedWord);
-
-                if (displayedWord==keyWord)
-                {
-                    round++;
-                    clearGame();
-                    nextRound();
-                    MessageBox.Show("Good job!", "Round passed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    nextRound();
-                }
-            }
-            else
-            {
-                chancesLeft--;
-                lblChances.Text = chancesLeft.ToString();
-                hangmanPictureControl1.DrawHangman(chancesLeft);
-                if(chancesLeft==0)
-                {
-                    MessageBox.Show("Game over!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    clearGame();
-                }
-            }
-        }
-
-        private void nextRound()
-        {
-            keyWord = selectedWords[round - 1];
-            displayedWord = "";
-            displayedWord = displayedWord.PadLeft(keyWord.Length, '_');
-            lblWord.Text = separateChars(displayedWord);
+            lblWord.Text = separateChars(logic.DisplayedWord);
+            logic.Round = 1;
         }
 
         private void clearGame()
         {
             hangmanPictureControl1.ClearPicture();
-            chancesLeft = 6;
-            lblChances.Text = chancesLeft.ToString();
-            lblRound.Text = round.ToString();
+            lblChances.Text = logic.ChancesLeft.ToString();
+            lblRound.Text = logic.Round.ToString();
+            lblWord.Text = separateChars(logic.DisplayedWord);
             foreach (Control control in flowLayoutPanel1.Controls)
                 control.Enabled = true;
-        }
-
-        private List<string> getRoundWords()
-        {
-            List<string> words = new List<string>();
-            List<int> indexes = new List<int>();
-            Random rnd = new Random();
-            int counter = 0;
-            while(counter<5)
-            {
-                int idx = rnd.Next(0, gameWords.Count - 1);
-                if (indexes.Any(i => i == idx))
-                    continue;
-                else
-                {
-                    words.Add(gameWords[idx]);
-                    indexes.Add(idx);
-                    counter++;
-                }
-            }
-
-            return words;
-        }
-
-        private List<int> checkChar(char c)
-        {
-            List<int> charIdxs = new List<int>();
-            for (int i = keyWord.IndexOf(c); i > -1; i = keyWord.IndexOf(c, i + 1))
-            {
-                charIdxs.Add(i);
-            }
-
-            return charIdxs;
         }
 
         private string separateChars(string word)
         {
             string result = "";
             StringBuilder sb = new StringBuilder(word);
-            for (int i=0;i<word.Length;i++)
+            for (int i = 0; i < word.Length; i++)
             {
                 result += sb[i];
                 if (i != word.Length - 1)

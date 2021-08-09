@@ -29,7 +29,6 @@ namespace HangmanGame
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnTest = new System.Windows.Forms.Button();
             this.hangmanPictureControl1 = new HangmanGame.Controls.HangmanPictureControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,16 +41,6 @@ namespace HangmanGame
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnTest
-            // 
-            this.btnTest.Location = new System.Drawing.Point(236, 65);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(75, 23);
-            this.btnTest.TabIndex = 0;
-            this.btnTest.Text = "Test";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // hangmanPictureControl1
             // 
@@ -157,7 +146,6 @@ namespace HangmanGame
             this.Controls.Add(this.lblChances);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.hangmanPictureControl1);
-            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
@@ -171,8 +159,6 @@ namespace HangmanGame
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnTest;
         private Controls.HangmanPictureControl hangmanPictureControl1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
