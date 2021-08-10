@@ -91,7 +91,7 @@ namespace HangmanGame
             this.lblChances.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblChances.Location = new System.Drawing.Point(94, 68);
             this.lblChances.Name = "lblChances";
-            this.lblChances.Size = new System.Drawing.Size(76, 20);
+            this.lblChances.Size = new System.Drawing.Size(144, 20);
             this.lblChances.TabIndex = 14;
             this.lblChances.Text = "6";
             this.lblChances.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -122,7 +122,7 @@ namespace HangmanGame
             this.lblRound.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblRound.Location = new System.Drawing.Point(94, 106);
             this.lblRound.Name = "lblRound";
-            this.lblRound.Size = new System.Drawing.Size(76, 20);
+            this.lblRound.Size = new System.Drawing.Size(144, 20);
             this.lblRound.TabIndex = 33;
             this.lblRound.Text = "1";
             this.lblRound.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -147,10 +147,12 @@ namespace HangmanGame
             this.Controls.Add(this.label1);
             this.Controls.Add(this.hangmanPictureControl1);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hangman game";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

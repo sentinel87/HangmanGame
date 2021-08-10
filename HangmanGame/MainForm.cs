@@ -54,9 +54,20 @@ namespace HangmanGame
             if(next == true)
             {
                 lblWord.Text = separateChars(logic.DisplayedWord);
-                MessageBox.Show("Good job!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                logic.NextRound();
-                clearGame();
+                if (logic.Round < 6)
+                {
+                    MessageBox.Show("Good job!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    logic.NextRound();
+                    clearGame();
+                }
+                else
+                {
+                    TimeSpan span = DateTime.Now - logic.StartingTime;
+                    string time = $"{addingZero(span.Hours)}:{addingZero(span.Minutes)}:{addingZero(span.Seconds)}";
+                    MessageBox.Show($"Victory! Your time: {time}.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    startNewGame();
+                    clearGame();
+                }
             }
             lblWord.Text = separateChars(logic.DisplayedWord);
             lblChances.Text = logic.ChancesLeft.ToString();
@@ -64,6 +75,7 @@ namespace HangmanGame
             if (logic.ChancesLeft == 0)
             {
                 MessageBox.Show("Game over!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                startNewGame();
                 clearGame();
             }
 
@@ -71,8 +83,13 @@ namespace HangmanGame
 
         private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            startNewGame();
+        }
+
+        private void startNewGame()
+        {
             bool result = logic.ResetLogic();
-            if(!result)
+            if (!result)
             {
                 MessageBox.Show("Game source does not have enough words (12).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -106,9 +123,9 @@ namespace HangmanGame
             return result;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private string addingZero(int val)
         {
-
+            return val < 10 ? $"0{val.ToString()}" : val.ToString();
         }
     }
 }

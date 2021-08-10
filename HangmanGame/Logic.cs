@@ -12,6 +12,8 @@ namespace HangmanGame
         public int ChancesLeft = 6;
         public int Round = 1;
 
+        public DateTime StartingTime { get; set; }
+
         public string KeyWord = "hangman";
         public string DisplayedWord = "_______";
 
@@ -22,6 +24,7 @@ namespace HangmanGame
         {
             gameWords = new List<string>();
             selectedWords = new List<string>();
+            StartingTime = DateTime.Now;
         }
 
         public void SetDataSource(List<string>words)
@@ -39,9 +42,10 @@ namespace HangmanGame
             {
                 selectedWords = getRoundWords();
             }
-            NextRound();
+            StartingTime = DateTime.Now;
             Round = 1;
             ChancesLeft = 6;
+            NextRound();
             return true;
         }
 
